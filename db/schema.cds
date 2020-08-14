@@ -1,4 +1,4 @@
-using { cuid, temporal, Currency } from '@sap/cds/common';
+using { cuid, managed, Currency } from '@sap/cds/common';
 
 namespace pt.condo.rent;
 
@@ -6,11 +6,11 @@ namespace pt.condo.rent;
 type RentStatus : Integer enum {
     ok = 1;             //Payment is in order
     overdue = 2;        //Payment overdue
-    legal_action = 3;   //Legal action under action
+    legal_action = 3;   //Legal action ongoing
 }
 
 // Information about a tenant
-entity Tenant : cuid {
+entity Tenant : cuid, managed {
     name : String(40);
     surname : String(40);
     mail : String(80);
@@ -18,18 +18,23 @@ entity Tenant : cuid {
 }
 
 // Rent information per fraction and a period in time
-entity Rent : cuid, temporal {
+@cds.autoexpose
+entity Rent : cuid {
     fraction : String(5) not null;
     tenant : Association to one Tenant;
-    monthly_rent : Decimal(9,2);
-    rent_currency : Currency;
+    monthlyRent : Decimal(9,2);
+    rentCurrency : Currency;
+    rentingPeriod : Integer;
+    paidPeriod : Integer;
     status : RentStatus;
+    rentFrom : Date;        //The reason we have rentFrom is due to the fact from is a reserved word
+    rentTo : Date;
 }
 
 // Payments performed under a rent period for a fraction
 entity PaymentHistory : cuid {
-    payment_date : Date;
-    payed_amount : Decimal(9,2);
-    payed_currency : Currency;
+    paymentDate : Date;
+    payedAmount : Decimal(9,2);
+    payedCurrency : Currency;
     rent : Association to one Rent;
 }
