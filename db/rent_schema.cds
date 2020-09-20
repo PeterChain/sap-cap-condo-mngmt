@@ -1,4 +1,5 @@
 using { cuid, managed, Currency } from '@sap/cds/common';
+using { pt.condo.billing.Invoice as Invoice } from './billing_schema';
 
 namespace pt.condo.rent;
 
@@ -31,10 +32,21 @@ entity Rent : cuid {
     rentTo : Date;
 }
 
+// Complementary expenses
+entity AditionalExpense : cuid {
+    detail : String(100);
+    date : Date;
+    amount : Decimal(9,2);
+    currency : Decimal(9,2);
+    payed : Boolean;
+    rent : Association to one Rent;
+}
+
 // Payments performed under a rent period for a fraction
 entity PaymentHistory : cuid {
     paymentDate : Date;
     payedAmount : Decimal(9,2);
     payedCurrency : Currency;
     rent : Association to one Rent;
+    invoice : Composition of one Invoice;
 }

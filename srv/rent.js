@@ -1,5 +1,5 @@
 const cds = require('@sap/cds')
-const { lastDayOfMonth, eachMonthOfInterval, compareAsc, differenceInMonths } = require('date-fns')
+const { lastDayOfMonth, eachMonthOfInterval, compareAsc, differenceInMonths, parseISO } = require('date-fns')
 
 
 module.exports = srv => {
@@ -25,19 +25,29 @@ module.exports = srv => {
         const rent = req.data
         const tx = cds.transaction(req)
 
-        console.log(rent)
+        return tx.reject(404)
 
+        const rentFrom = new Date(parseISO(rent.rentFrom))
+        const rentTo = new Date(parseISO(rent.rentTo))
+
+        if (rentFrom > rentTo) {
+            return req.reject(400, "Renting end date can't be earlier than start date")
+        }
 
         // Check if data range is a valid one
-        if (compareAsc(rent.rentFrom, rent.rentTo) >= 0)
-            return req.reject("Renting end date can't be earlier than start date")
-        
-        req.error(500, "For testing purposes")
-        return
-        
-        // A rent must be at least 2 months
-        if (differenceInMonths(rent.rentFrom, rent.rentTo) < 2)
-            return req.reject("Renting period must be 2 months or more")
+        try {
+            if (compareAsc(rentFrom, rentTo) >= 0)
+                return req.error(400, "Renting end date can't be earlier than start date")
+            
+            // A rent must be at least 2 months
+            if (differenceInMonths(rent.rentFrom, rent.rentTo) < 2) {
+                req.reject(400, "Renting period must be 2 months or more")
+                return
+            }
+            
+        } catch (e) {
+            console.log("error", e)
+        }
         
         // The fraction must be free for that time period
         return tx.run(SELECT.from(Rent)

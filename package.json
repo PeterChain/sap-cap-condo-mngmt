@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "A simple CAP project for condo management.",
   "repository": "<Add your repository here>",
-  "license": "UNLICENSED",
+  "license": "APACHE-2.0",
   "private": true,
   "dependencies": {
     "@sap/cds": "^3",
-    "date-fns": "^2.14.0",
-    "express": "^4"
+    "date-fns": "^2.16.1",
+    "express": "^4",
+    "passport": "^0.4.1",
+    "sqlite3": "^5.0.0"
   },
   "scripts": {
     "start": "npx cds run"
@@ -17,6 +19,29 @@
     "requires": {
       "db": {
         "kind": "sql"
+      }
+    },
+    "strategy": "mock",
+    "auth": {
+      "users": {
+        "admin": {
+          "password": "adminpassword",
+          "roles": [
+            "admin"
+          ]
+        },
+        "john.amish": {
+          "password": "tenantpassword1",
+          "roles": [
+            "tenant"
+          ]
+        },
+        "susan.croyden": {
+          "password": "tenantpassword2",
+          "roles": [
+            "tenant"
+          ]
+        }
       }
     }
   }
