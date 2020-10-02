@@ -16,6 +16,7 @@ entity Tenant : cuid, managed {
     surname : String(40);
     mail : String(80);
     mobile : String(20);
+    taxNumber : String(20);
 }
 
 // Rent information per fraction and a period in time

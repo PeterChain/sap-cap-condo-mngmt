@@ -1,19 +1,23 @@
 const cds = require('@sap/cds')
-const { lastDayOfMonth, eachMonthOfInterval, compareAsc, differenceInMonths, parseISO } = require('date-fns')
+const { lastDayOfMonth, 
+        compareAsc, 
+        differenceInMonths,
+        areIntervalsOverlapping,
+        format
+    } = require('date-fns')
 
 
-module.exports = srv => {
+module.exports = (srv) => {
     const db = cds.connect.to('db')
-    const { Tenant, Rent } = db.entities
+    const { Rent } = db.entities ('pt.condo.rent')
 
     /**
      * Validations to tenant removal
      */
     srv.before ('DELETE', 'Tenant', (req) => {
         const tenant = req.data.ID
-        const tx = cds.transaction(req)
 
-        return tx.run(SELECT.from(Rent).where({ tenant_ID: tenant }))
+        return cds.run(SELECT.from(Rent).where({ tenant_ID: tenant }))
             .then(rows => {
                 if (rows.length >= 1)
                     req.error(409, `Tenant with ID ${tenant} already has a rent history`)
@@ -21,56 +25,57 @@ module.exports = srv => {
             
     })
 
+    /**
+     * Validation to a new rent
+     */
     srv.before('CREATE', 'Rent', (req) => {
         const rent = req.data
-        const tx = cds.transaction(req)
 
-        return tx.reject(404)
-
-        const rentFrom = new Date(parseISO(rent.rentFrom))
-        const rentTo = new Date(parseISO(rent.rentTo))
-
-        if (rentFrom > rentTo) {
-            return req.reject(400, "Renting end date can't be earlier than start date")
-        }
+        const rentFrom = new Date(rent.rentFrom)
+        const rentTo = new Date(rent.rentTo)
 
         // Check if data range is a valid one
-        try {
-            if (compareAsc(rentFrom, rentTo) >= 0)
-                return req.error(400, "Renting end date can't be earlier than start date")
-            
-            // A rent must be at least 2 months
-            if (differenceInMonths(rent.rentFrom, rent.rentTo) < 2) {
-                req.reject(400, "Renting period must be 2 months or more")
-                return
-            }
-            
-        } catch (e) {
-            console.log("error", e)
-        }
+        if (compareAsc(rentFrom, rentTo) >= 0)
+            return req.error(400, "Renting end date can't be earlier than start date")
         
+        // A rent must be at least 2 months
+        if (differenceInMonths(rentFrom, rentTo) >= 0 &&
+            differenceInMonths(rentFrom, rentTo) < 2)
+            return req.error(400, "Renting period must be 2 months or more")
+
         // The fraction must be free for that time period
-        return tx.run(SELECT.from(Rent)
-                        .where('fraction =', rent.fraction)
-                        .and('rentFrom >=', rent.rentFrom)
-                        .or('rentTo <=', rent.rentTo)).then(rows => {
-                            console.log(rows)
-                            req.error(500, "For testing purposes")
-                        })
+        const query = SELECT.from(Rent).where({'fraction': rent.fraction})
+        cds.run(query).then(rents => {
+            for (let existingRent of rents) {
+                const existingRentFrom = new Date(existingRent.rentFrom), 
+                      existingRentTo = new Date(existingRent.rentTo)
+                
+                if (areIntervalsOverlapping({start: rentFrom, end: rentTo},
+                                            {start: existingRentFrom, end: existingRentTo}))
+                    return req.error(400, "There is a rent for that period of time")
+            }
+        })
     })
 
-    // /**
-    //  * Restriction on rent
-    //  */
-    // srv.on('CREATE', 'Rent', (req) => {
-    //     const rent = req.data
+    /**
+     * Adjust fields to rent creation
+     */
+    srv.on('CREATE', 'Rent', (req, next) => {
+        const rent = req.data
+
+        const rentFrom = new Date(rent.rentFrom)
+        const rentTo = new Date(rent.rentTo)
         
-    //     //A rent must be set to the first day of the starting month and last of ending month
-    //     if (rent.validFrom.getDay() != 1)
-    //         rent.validFrom.setDate(1)
+        //A rent must be set to the first day of the starting month and last of ending month
+        if (rentFrom.getDay() != 1)
+            rentFrom.setDate(1)
         
-    //     if (rent.validTo === lastDayOfMonth(rent.validTo))
-    //         rent.validTo = lastDayOfMonth(rent.validTo)
+        if (rentTo === lastDayOfMonth(rentTo))
+            rentTo = lastDayOfMonth(rentTo)
         
-    // })
+        req.data.rentFrom = format(rentFrom, "yyyy-MM-dd")
+        req.data.rentTo = format(rentTo, "yyyy-MM-dd")
+
+        next()    
+    })
 }
