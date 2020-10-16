@@ -1,4 +1,5 @@
 using { cuid, managed, Currency } from '@sap/cds/common';
+using { pt.condo.rent as rentMngmt } from './rent_schema'; 
 
 namespace pt.condo.billing;
 
@@ -25,3 +26,20 @@ entity InvoiceItems : cuid {
     itemValue : Decimal(9,2);
     itemTax : Decimal(9,2);
 }
+
+// Payments performed under a rent period for a fraction
+entity PaymentHistory : cuid {
+    paymentDate : Date;
+    payedAmount : Decimal(9,2);
+    payedCurrency : Currency;
+    rent : Association to one rentMngmt.Rent;
+    invoice : Composition of one Invoice;
+}
+
+define view OpenInvoices 
+    as select * from Invoice where status = '1';
+
+define view OverdueInvoices
+    as select * from Invoice
+        where status = '1'
+          and dueDate > $now;

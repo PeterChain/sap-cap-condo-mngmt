@@ -8,20 +8,22 @@ const { lastDayOfMonth,
 
 
 module.exports = (srv) => {
-    const db = cds.connect.to('db')
-    const { Rent } = db.entities ('pt.condo.rent')
-
     /**
      * Validations to tenant removal
      */
-    srv.before ('DELETE', 'Tenant', (req) => {
+    srv.before ('DELETE', 'Tenant', async (req) => {
         const tenant = req.data.ID
 
-        return cds.run(SELECT.from(Rent).where({ tenant_ID: tenant }))
-            .then(rows => {
-                if (rows.length >= 1)
-                    req.error(409, `Tenant with ID ${tenant} already has a rent history`)
-            })
+        //Connects to the service (in our case, it's just database service)
+        const db = await cds.connect.to('db')
+        const { Rent } = db.entities('pt.condo.rent')
+
+        //Starts a transaction
+        const tx = db.tx(req)
+        rows = await tx.run(SELECT.from(Rent).columns('ID').where({ 'tenant_ID': tenant }))
+
+        if (rows.length >= 1)
+            req.reject(412, `Tenant with ID ${tenant} already has a rent history`)
             
     })
 

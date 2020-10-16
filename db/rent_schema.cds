@@ -1,34 +1,42 @@
 using { cuid, managed, Currency } from '@sap/cds/common';
-using { pt.condo.billing.Invoice as Invoice } from './billing_schema';
 
 namespace pt.condo.rent;
 
-
-type RentStatus : Integer enum {
+type RentStatusCode : Integer enum {
     ok = 1;             //Payment is in order
     overdue = 2;        //Payment overdue
     legal_action = 3;   //Legal action ongoing
 }
 
-// Information about a tenant
+entity RentingStatus {
+    key status: RentStatusCode;
+    description: localized String;
+}
+
+entity Fractions {
+    key fraction: String(5);
+    area: Integer;
+    floor: Integer;
+}
+
 entity Tenant : cuid, managed {
     name : String(40);
     surname : String(40);
     mail : String(80);
     mobile : String(20);
     taxNumber : String(20);
+    rents: Composition of many Rent on rents.tenant = $self;
 }
 
-// Rent information per fraction and a period in time
 @cds.autoexpose
 entity Rent : cuid {
-    fraction : String(5) not null;
+    fraction : Association to one Fractions not null;
     tenant : Association to one Tenant;
     monthlyRent : Decimal(9,2);
     rentCurrency : Currency;
     rentingPeriod : Integer;
     paidPeriod : Integer;
-    status : RentStatus;
+    status : Association to one RentingStatus;
     rentFrom : Date;        //The reason we have rentFrom is due to the fact from is a reserved word
     rentTo : Date;
 }
@@ -43,11 +51,43 @@ entity AditionalExpense : cuid {
     rent : Association to one Rent;
 }
 
-// Payments performed under a rent period for a fraction
-entity PaymentHistory : cuid {
-    paymentDate : Date;
-    payedAmount : Decimal(9,2);
-    payedCurrency : Currency;
-    rent : Association to one Rent;
-    invoice : Composition of one Invoice;
+annotate Tenant with {
+    name        @title: '{i18n>tenantName}';
+    surname     @title: '{i18n>tenantSurname}';
+    mail        @title: '{i18n>tenantMail}';
+    mobile      @title: '{i18n>tenantMobile}';
+    taxNumber   @title: '{i18n>tenantTaxnNum}';
 }
+
+annotate Rent with {
+    fraction        @title: '{i18n>rentFraction}';
+    tenant          @title: '{i18n>rentTenant}';
+    monthlyRent     @title: '{i18n>rentMonthlyRent}';
+    rentCurrency    @title: '{i18n>rentCurrency}';
+    rentingPeriod   @title: '{i18n>rentRentingPeriod}';
+    paidPeriod      @title: '{i18n>rentPaidPeriod}';
+    status          @title: '{i18n>rentStatus}';
+    rentFrom        @title: '{i18n>rentRentFrom}';
+    rentTo          @title: '{i18n>rentRentTo}';
+};
+
+annotate AditionalExpense with {
+    detail      @title: '{i18n>expDetail}';
+    date        @title: '{i18n>expDate}';
+    amount      @title: '{i18n>expAmount}';
+    currency    @title: '{i18n>expCurrency}';
+    payed       @title: '{i18n>expPayed}';
+    rent        @title: '{i18n>expRent}';
+}
+
+annotate RentingStatus with {
+    status      @title: '{i18n>statusCode}';
+    description @title: '{i18n>statusDescription}';
+};
+
+annotate Fractions with {
+    fraction    @title: '{i18n>fractionID}';
+    area        @title: '{i18n>fractionArea}';
+    floor       @title: '{i18n>fractionFloor}';
+};
+

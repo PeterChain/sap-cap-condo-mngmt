@@ -1,5 +1,5 @@
-ID;fraction;tenant_ID;monthlyRent;rentCurrency_code;rentingPeriod;paidPeriod;status;rentFrom;rentTo
+ID;fraction_fraction;tenant_ID;monthlyRent;rentCurrency_code;rentingPeriod;paidPeriod;status_status;rentFrom;rentTo
 59f26346-e593-4735-992a-1b4548bcfd29;A;6d200cf6-c8cf-4bb4-b869-c9603b6c5a00;120;EUR;6;3;1;2020-01-01;2020-06-30
 604f9b3e-9532-41a3-af09-3f6e29272767;B;a901d04d-adc7-4b52-a0b2-9cee86b2212d;80;EUR;12;3;1;2020-01-01;2020-12-31
-604f9b3e-9532-41a3-af09-3f6e29272764;B;a901d04d-adc7-4b52-a0b2-9cee86b2212d;80;EUR;12;3;1;2019-08-01;2019-12-31
+604f9b3e-9532-41a3-af09-3f6e29272764;B;a901d04d-adc7-4b52-a0b2-9cee86b2212d;80;EUR;12;3;2;2019-08-01;2019-12-31
 5af1fcdb-0e84-47a5-be91-89baff0ba68f;A;6d200cf6-c8cf-4bb4-b869-c9603b6c5a00;120.50;EUR;6;6;1;2019-06-01;2019-12-31

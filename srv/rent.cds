@@ -2,48 +2,40 @@ using { pt.condo.rent as rent } from '../db/rent_schema';
 using { pt.condo.billing as billing } from '../db/billing_schema';
 
 // Rent and tenants administration
-service RentManagement 
-    @( path: '/rent' )
-    // @( path: '/rent', requires: 'authenticated-user') 
+service RentManagement @( path: '/rentAdmin' )
 {
-    // @restrict: [
-    //     { grant: 'READ', to: 'tenant' },
-    //     { grant: ['CREATE','READ','UPDATE', 'DELETE'], to: 'admin' },
-    // ]
+    @odata.draft.enabled
     entity Tenant as projection on rent.Tenant 
         excluding {createdAt, createdBy, modifiedAt, modifiedBy};
 
+    entity Rent as projection on rent.Rent {
+        *, 
+        status: redirected to RentingStatus,
+        fraction: redirected to Fractions
+    };    
+
+    @readonly
+    entity RentingStatus as projection on rent.RentingStatus;
+
+    @readonly
+    entity Fractions as projection on rent.Fractions;
+
+    @readonly
+    entity PaymentHistory as projection on billing.PaymentHistory;
+}
+
+service CustomerService @( path: '/customer')
+{
     @capabilities: {
-       Insertable:true, 
-       Updatable:true,
+       Insertable:false,
        Deletable:false 
     }
-    // @restrict: [
-    //     { grant: 'READ', to: 'tenant' },
-    //     { grant: ['READ', 'UPDATE','CREATE'], to: 'admin' },
-    // ]
-    entity Rent as projection on rent.Rent;
-}
-
-
-// Rent and additional payments administration
-service BillingManagement @( path: 'billingManagement' )
-{
-    @readonly
-    entity PaymentHistory as projection on rent.PaymentHistory;
-
-    entity AdditionalExpenses as projection on rent.AditionalExpense;
-
-    action issueBill (rent: String, 
-                      month: Integer, 
-                      year: Integer, 
-                      includeAdditionals: Boolean
-                    ) returns String
-}
-
-
-// Invoicing services
-service InvoiceService {
+    entity Tenant as projection on rent.Tenant 
+        excluding {createdAt, createdBy, modifiedAt, modifiedBy};
     
-    entity Invoice as projection on billing.Invoice;
+    @readonly
+    entity Rent as projection on rent.Rent;
+
+    @readonly
+    entity PaymentHistory as projection on billing.PaymentHistory;
 }

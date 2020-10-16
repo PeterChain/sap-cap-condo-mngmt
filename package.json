@@ -2,7 +2,7 @@
   "name": "condo-mngmt",
   "version": "1.0.0",
   "description": "A simple CAP project for condo management.",
-  "repository": "<Add your repository here>",
+  "repository": "https://github.com/PeterChain/sap-cap-condo-mngmt",
   "license": "APACHE-2.0",
   "private": true,
   "dependencies": {
@@ -44,5 +44,12 @@
         }
       }
     }
-  }
+  },
+  "devDependencies": {
+    "@sap/ux-specification": "^1.78.10"
+  },
+  "sapux": [
+    "app/tenantsadm",
+    "app/rents"
+  ]
 }
