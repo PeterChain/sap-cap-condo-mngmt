@@ -29,3 +29,16 @@ mta_archives/
 # IDEs
 .vscode
 .idea
+
+
+# Source folder of SAP Fiori Tools generated project
+app\tenantadm\src
+
+# Source folder of SAP Fiori Tools generated project
+app\tenantsadm\src
+
+# Source folder of SAP Fiori Tools generated project
+app\rentmngm\src
+
+# Source folder of SAP Fiori Tools generated project
+app\rents\src
