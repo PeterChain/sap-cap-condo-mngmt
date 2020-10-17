@@ -11,7 +11,9 @@ service RentManagement @( path: '/rentAdmin' )
     entity Rent as projection on rent.Rent {
         *, 
         status: redirected to RentingStatus,
-        fraction: redirected to Fractions
+        fraction: redirected to Fractions,
+        payments: redirected to PaymentHistory,
+        tenant: redirected to Tenant
     };    
 
     @readonly

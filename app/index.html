@@ -10,12 +10,20 @@
             window["sap-ushell-config"] = {
                 defaultRenderer: "fiori2",
                 applications: {
+                    "tenant-adm": {
+                        title: "{i18n>Tenants}",
+                        description: "Tenant management",
+                        additionalInformation: "SAPUI5.Component=pt.condo.rent.tenantsadm",
+                        applicationType: "URL",
+                        url: "tenantsadm/webapp",
+                        navigationMode: "embedded"
+                    },
                     "rent-ctrs": {
                         title: "Rent contracts",
                         description: "Rent contract management",
                         additionalInformation: "SAPUI5.Component=pt.condo.rent.rents.rents",
                         applicationType: "URL",
-                        url: "./",
+                        url: "rents/webapp",
                         navigationMode: "embedded"
                     }
                 }

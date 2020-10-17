@@ -1,12 +1,12 @@
 using RentManagement as service from '../../srv/rent';
 
 // List annotations
-annotate RentManagement.Tenant with @(
-    Capabilities: {
-        Insertable: true,
-        Updatable: true,
-        Deletable: true
-    },
+annotate service.Tenant with @(
+    // Capabilities: {
+    //     Insertable: true,
+    //     Updatable: true,
+    //     Deletable: true
+    // },
     UI: {
         SelectionFields: [name, surname, taxNumber],
         LineItem: [
@@ -31,7 +31,7 @@ annotate RentManagement.Tenant with @(
 
         Facets: [
             {$Type: 'UI.ReferenceFacet', Label: '{i18n>General}', Target: '@UI.FieldGroup#General'},
-            {$Type: 'UI.ReferenceFacet', Label: '{i18n>Rents}', Target: 'rents/@UI.LineItem'},
+            {$Type: 'UI.ReferenceFacet', Label: '{i18n>Rents}', Target: 'rents/@UI.LineItem'}
         ],
 
         FieldGroup#General: {
