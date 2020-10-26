@@ -13,8 +13,10 @@ annotate service.Rent with @(
 
         HeaderInfo  : {
             $Type : 'UI.HeaderInfoType',
-            TypeName : '{i18n>rent}',
-            TypeNamePlural : '{i18n>rents}',
+            TypeName: '{i18n>Rent}',
+            TypeNamePlural : '{i18n>Rents}',
+            Title: { Value: ID },
+            Description: { Value: '{i18n>RentContract}' },
         },
 
         Identification: [
@@ -25,7 +27,7 @@ annotate service.Rent with @(
 
         Facets: [
             {$Type: 'UI.ReferenceFacet', Label: '{i18n>RentValues}', Target: '@UI.FieldGroup#RentValues'},
-            {$Type: 'UI.ReferenceFacet', Label: '{i18n>Tenant}', Target: '@UI.FieldGroup#Tenant'},
+            {$Type: 'UI.ReferenceFacet', Label: '{i18n>Others}', Target: '@UI.FieldGroup#Others'},
             {$Type: 'UI.ReferenceFacet', Label: '{i18n>Payments}', Target: 'payments/@UI.LineItem'},
         ],
 
@@ -37,15 +39,16 @@ annotate service.Rent with @(
 			]
 		},
 
-        FieldGroup#Tenant: {
+        FieldGroup#Others: {
 			Data: [
-				{Value: tenant.name},
-				{Value: tenant.surname}
+				{Value: tenant_ID},
+				{Value: status_status }
 			]
 		}
         
     }
 );
+
 
 annotate service.PaymentHistory with @(
     UI: {

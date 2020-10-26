@@ -20,6 +20,7 @@ entity Fractions {
 }
 
 entity Tenant : cuid, managed {
+    tenantKey: String(25);
     name : String(40);
     surname : String(40);
     mail : String(80);
@@ -28,7 +29,6 @@ entity Tenant : cuid, managed {
     rents: Composition of many Rent on rents.tenant = $self;
 }
 
-@cds.autoexpose
 entity Rent : cuid {
     fraction : Association to one Fractions not null;
     tenant : Association to one Tenant;
@@ -51,15 +51,25 @@ entity AditionalExpense : cuid {
     rent : Association to one Rent;
 }
 
+annotate RentingStatus with @( cds.odata.valuelist );
+annotate Fractions with @( cds.odata.valuelist );
+annotate Tenant with @( cds.odata.valuelist );
+
+
 annotate Tenant with {
+    ID          @readonly;
     name        @title: '{i18n>tenantName}';
     surname     @title: '{i18n>tenantSurname}';
     mail        @title: '{i18n>tenantMail}';
     mobile      @title: '{i18n>tenantMobile}';
     taxNumber   @title: '{i18n>tenantTaxnNum}';
+    tenantKey   @title: '{i18n>tenantID}'
+                @readonly;
 }
 
 annotate Rent with {
+    ID              @title: '{i18n>rentID}'
+                    @readonly;
     fraction        @title: '{i18n>rentFraction}';
     tenant          @title: '{i18n>rentTenant}';
     monthlyRent     @title: '{i18n>rentMonthlyRent}';
@@ -69,6 +79,7 @@ annotate Rent with {
     status          @title: '{i18n>rentStatus}';
     rentFrom        @title: '{i18n>rentRentFrom}';
     rentTo          @title: '{i18n>rentRentTo}';
+    tenant_ID       @ValueList.entity: Tenant;
 };
 
 annotate AditionalExpense with {
@@ -91,3 +102,8 @@ annotate Fractions with {
     floor       @title: '{i18n>fractionFloor}';
 };
 
+
+view TenantRents as select from Rent 
+    excluding { monthlyRent, 
+                rentCurrency, 
+                rentingPeriod };

@@ -117,7 +117,16 @@
                     "options": {
                         "settings": {
                             "entitySet": "Tenant",
-                            "navigation": {}
+                            "navigation": {},
+                            "controlConfiguration": {
+                                "{i18n>Rents}": {
+                                    "tableSettings": {
+                                        "creationMode": {
+                                            "name": "NewPage"
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

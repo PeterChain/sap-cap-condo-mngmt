@@ -2,11 +2,6 @@ using RentManagement as service from '../../srv/rent';
 
 // List annotations
 annotate service.Tenant with @(
-    // Capabilities: {
-    //     Insertable: true,
-    //     Updatable: true,
-    //     Deletable: true
-    // },
     UI: {
         SelectionFields: [name, surname, taxNumber],
         LineItem: [
@@ -17,7 +12,7 @@ annotate service.Tenant with @(
         ],
 
         HeaderInfo: {
-            TypeName: '{i18n>tenant}', TypeNamePlural: '{i18n>tenants}',
+            TypeName: '{i18n>Tenant}', TypeNamePlural: '{i18n>Tenants}',
 			Title: {
 				Value: name
 			},
@@ -44,4 +39,14 @@ annotate service.Tenant with @(
     }
 );
 
-
+annotate service.TenantRents with @(
+    UI: {
+        LineItem: [
+            {Value: fraction.fraction},
+            {Value: paidPeriod},
+            {Value: rentFrom},
+            {Value: rentTo},
+            {Value: status.description}
+        ]        
+    }
+);

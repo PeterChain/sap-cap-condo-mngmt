@@ -27,6 +27,17 @@ module.exports = (srv) => {
             
     })
 
+    /** 
+     * Generation of the External tenant ID
+     */
+    srv.on ('CREATE', 'Tenant', (req, next) => {
+        console.log(req.data)
+
+        req.data.tenantKey = 'TEN' + req.data.ID.substring(0,8)
+
+        next()
+    })
+
     /**
      * Validation to a new rent
      */
@@ -75,6 +86,7 @@ module.exports = (srv) => {
         if (rentTo === lastDayOfMonth(rentTo))
             rentTo = lastDayOfMonth(rentTo)
         
+        req.data.rentingPeriod = differenceInMonths(rentFrom, rentTo)
         req.data.rentFrom = format(rentFrom, "yyyy-MM-dd")
         req.data.rentTo = format(rentTo, "yyyy-MM-dd")
 

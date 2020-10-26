@@ -5,16 +5,16 @@ using { pt.condo.billing as billing } from '../db/billing_schema';
 service RentManagement @( path: '/rentAdmin' )
 {
     @odata.draft.enabled
-    entity Tenant as projection on rent.Tenant 
-        excluding {createdAt, createdBy, modifiedAt, modifiedBy};
+    entity Tenant as projection on rent.Tenant {
+        *, rents: redirected to TenantRents
+    } excluding {createdAt, createdBy, modifiedAt, modifiedBy};
 
+    @odata.draft.enabled
     entity Rent as projection on rent.Rent {
-        *, 
-        status: redirected to RentingStatus,
+        *,
         fraction: redirected to Fractions,
-        payments: redirected to PaymentHistory,
-        tenant: redirected to Tenant
-    };    
+        payments: redirected to PaymentHistory
+    };
 
     @readonly
     entity RentingStatus as projection on rent.RentingStatus;
@@ -23,7 +23,12 @@ service RentManagement @( path: '/rentAdmin' )
     entity Fractions as projection on rent.Fractions;
 
     @readonly
-    entity PaymentHistory as projection on billing.PaymentHistory;
+    entity TenantRents as projection on rent.TenantRents;
+
+    @readonly
+    entity PaymentHistory as projection on billing.PaymentHistory {
+        *, rent: redirected to Rent
+    };
 }
 
 service CustomerService @( path: '/customer')
