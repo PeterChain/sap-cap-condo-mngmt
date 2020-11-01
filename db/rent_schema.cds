@@ -1,4 +1,4 @@
-using { cuid, managed, Currency } from '@sap/cds/common';
+using { cuid, managed, Currency, sap.common.CodeList as CodeList } from '@sap/cds/common';
 
 namespace pt.condo.rent;
 
@@ -6,6 +6,12 @@ type RentStatusCode : Integer enum {
     ok = 1;             //Payment is in order
     overdue = 2;        //Payment overdue
     legal_action = 3;   //Legal action ongoing
+}
+
+type ExpenditureType : Association to ExpenditureTypes;
+
+entity ExpenditureTypes: CodeList {
+    key code: String(1)
 }
 
 entity RentingStatus {
@@ -39,21 +45,30 @@ entity Rent : cuid {
     status : Association to one RentingStatus;
     rentFrom : Date;        //The reason we have rentFrom is due to the fact from is a reserved word
     rentTo : Date;
+    expenditures: Composition of many Expenditures on expenditures.rent = $self;
 }
 
-// Complementary expenses
-entity AditionalExpense : cuid {
+entity Expenditures : cuid {
+    rent: Association to one Rent;
     detail : String(100);
-    date : Date;
     amount : Decimal(9,2);
-    currency : Decimal(9,2);
+    currency : Currency;
     payed : Boolean;
-    rent : Association to one Rent;
+    date : Date;
+    rentYear: Integer;
+    rentMonth: Integer;
+    expenditureType: ExpenditureType;
 }
 
 annotate RentingStatus with @( cds.odata.valuelist );
 annotate Fractions with @( cds.odata.valuelist );
 annotate Tenant with @( cds.odata.valuelist );
+annotate ExpenditureTypes with @( cds.odata.valuelist );
+
+annotate ExpenditureType with {
+    rent        @title: '{i18n>expTypeRent}';
+    additionals @title: '{i18n>expTypeAdds}';
+};
 
 
 annotate Tenant with {
@@ -82,13 +97,16 @@ annotate Rent with {
     tenant_ID       @ValueList.entity: Tenant;
 };
 
-annotate AditionalExpense with {
-    detail      @title: '{i18n>expDetail}';
-    date        @title: '{i18n>expDate}';
-    amount      @title: '{i18n>expAmount}';
-    currency    @title: '{i18n>expCurrency}';
-    payed       @title: '{i18n>expPayed}';
-    rent        @title: '{i18n>expRent}';
+annotate Expenditures with {
+    detail          @title: '{i18n>expDetail}';
+    date            @title: '{i18n>expDate}';
+    amount          @title: '{i18n>expAmount}';
+    currency        @title: '{i18n>expCurrency}';
+    payed           @title: '{i18n>expPayed}';
+    rent            @title: '{i18n>expRent}';
+    rentYear        @title: '{i18n>expRentYear}';
+    rentMonth       @title: '{i18n>expRentMonth}';
+    expenditureType @title: '{i18n>expRentType}';
 }
 
 annotate RentingStatus with {
@@ -102,8 +120,19 @@ annotate Fractions with {
     floor       @title: '{i18n>fractionFloor}';
 };
 
+define view RentExpenditures as select from Expenditures {
+    ID,
+    detail,
+    expenditureType,
+    amount,
+    rentYear,
+    rentMonth,
+    payed,
+    rent
+};
 
-view TenantRents as select from Rent 
+define view TenantRents as select from Rent 
     excluding { monthlyRent, 
                 rentCurrency, 
-                rentingPeriod };
+                rentingPeriod,
+                expenditures };

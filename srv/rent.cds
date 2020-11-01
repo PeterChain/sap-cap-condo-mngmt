@@ -13,7 +13,13 @@ service RentManagement @( path: '/rentAdmin' )
     entity Rent as projection on rent.Rent {
         *,
         fraction: redirected to Fractions,
-        payments: redirected to PaymentHistory
+        expenditures: redirected to RentExpenditures
+    };
+
+    @readonly
+    entity RentExpenditures as projection on rent.RentExpenditures {
+        *,
+        rent: redirected to Rent
     };
 
     @readonly
@@ -25,9 +31,9 @@ service RentManagement @( path: '/rentAdmin' )
     @readonly
     entity TenantRents as projection on rent.TenantRents;
 
-    @readonly
-    entity PaymentHistory as projection on billing.PaymentHistory {
-        *, rent: redirected to Rent
+    entity Expenditures as projection on rent.Expenditures {
+        *,
+        rent: redirected to Rent
     };
 }
 
@@ -42,7 +48,4 @@ service CustomerService @( path: '/customer')
     
     @readonly
     entity Rent as projection on rent.Rent;
-
-    @readonly
-    entity PaymentHistory as projection on billing.PaymentHistory;
 }

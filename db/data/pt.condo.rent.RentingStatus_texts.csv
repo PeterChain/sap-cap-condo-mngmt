@@ -2,6 +2,6 @@ status;locale;description
 1;en;OK
 2;en;Overdue
 3;en;Under legal action
-1;pt;Regularizado
-2;pt;Em atraso
-3;pt;Em contencioso
+1;pt_PT;Regularizado
+2;pt_PT;Em atraso
+3;pt_PT;Em contencioso

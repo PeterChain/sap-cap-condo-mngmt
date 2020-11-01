@@ -1,0 +1,11 @@
+ID;rent_ID;detail;amount;currency_code;payed;date;rentYear;rentMonth;expenditureType_code
+2928ccdc-ae4c-45ad-b494-84d76bbdc6d1;59f26346-e593-4735-992a-1b4548bcfd29;Monthly rent;120.00;EUR;true;2020-01-03;2020;01;R
+2928ccdc-ae4c-45ad-b494-84d76bbdc6d2;59f26346-e593-4735-992a-1b4548bcfd29;Monthly rent;120.00;EUR;true;2020-02-03;2020;02;R
+2928ccdc-ae4c-45ad-b494-84d76bbdc6d3;59f26346-e593-4735-992a-1b4548bcfd29;Monthly rent;120.00;EUR;true;2020-03-03;2020;03;R
+2928ccdc-ae4c-45ad-b494-84d76bbdc6d4;59f26346-e593-4735-992a-1b4548bcfd29;Monthly rent;120.00;EUR;true;2020-04-03;2020;04;R
+2928ccdc-ae4c-45ad-b494-84d76bbdc6d5;59f26346-e593-4735-992a-1b4548bcfd29;Monthly rent;120.00;EUR;true;2020-05-03;2020;05;R
+2928ccdc-ae4c-45ad-b494-84d76bbdc6d6;59f26346-e593-4735-992a-1b4548bcfd29;Monthly rent;120.00;EUR;true;2020-05-03;2020;05;R
+6504e133-5c08-4b40-be9f-c15ad0c17b9d;a901d04d-adc7-4b52-a0b2-9cee86b2212d;Garage gate fix;29.99;EUR;true;2020-02-20;;;A
+6504e133-5c08-4b40-be9f-c15ad0c18b9d;a901d04d-adc7-4b52-a0b2-9cee86b2212d;Monthly rent;80.00;EUR;true;2020-01-03;2020;01;R
+6504e133-5c08-4b40-be9f-c15ad0c19b9d;a901d04d-adc7-4b52-a0b2-9cee86b2212d;Monthly rent;80.00;EUR;true;2020-02-03;2020;02;R
+6504e133-5c08-4b40-be9f-c15ad0c20b9d;a901d04d-adc7-4b52-a0b2-9cee86b2212d;Monthly rent;80.00;EUR;false;2020-03-03;2020;03;R

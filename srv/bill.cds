@@ -18,9 +18,4 @@ service BillingService @( path: '/billing' )
     entity OverdueInvoices as projection on billing.OverdueInvoices;
 
     function getPDF (invoice: String) returns String;
-
-    @readonly
-    entity PaymentHistory as projection on billing.PaymentHistory {
-        *, invoice: redirected to Invoice
-    };
 }

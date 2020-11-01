@@ -28,7 +28,7 @@ annotate service.Rent with @(
         Facets: [
             {$Type: 'UI.ReferenceFacet', Label: '{i18n>RentValues}', Target: '@UI.FieldGroup#RentValues'},
             {$Type: 'UI.ReferenceFacet', Label: '{i18n>Others}', Target: '@UI.FieldGroup#Others'},
-            {$Type: 'UI.ReferenceFacet', Label: '{i18n>Payments}', Target: 'payments/@UI.LineItem'},
+            {$Type: 'UI.ReferenceFacet', Label: '{i18n>Payments}', Target: 'expenditures/@UI.LineItem'},
         ],
 
         FieldGroup#RentValues: {
@@ -42,6 +42,7 @@ annotate service.Rent with @(
         FieldGroup#Others: {
 			Data: [
 				{Value: tenant_ID},
+				// {Value: tenant.name, ![@Common.FieldControl] : #ReadOnly},
 				{Value: status_status }
 			]
 		}
@@ -49,14 +50,15 @@ annotate service.Rent with @(
     }
 );
 
-
-annotate service.PaymentHistory with @(
+annotate service.RentExpenditures with @(
     UI: {
         LineItem: [
-            {Value: paymentDate},
-            {Value: payedAmount},
-            {Value: expense_ID},
-            {Value: invoice_ID},
+            {Value: detail},
+            {Value: expenditureType.name},
+            {Value: amount},
+            {Value: rentYear},
+            {Value: rentMonth},
+            {Value: payed},
         ]
     }
 );

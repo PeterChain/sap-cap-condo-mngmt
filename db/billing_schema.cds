@@ -27,18 +27,8 @@ entity InvoiceItems : cuid {
     itemTax : Decimal(9,2);
 }
 
-// Payments performed under a rent period for a fraction
-entity PaymentHistory : cuid {
-    paymentDate : Date;
-    payedAmount : Decimal(9,2);
-    payedCurrency : Currency;
-    expense: Association to one rentMngmt.AditionalExpense;
-    rent : Association to one rentMngmt.Rent;
-    invoice : Composition of one Invoice;
-}
-
-extend rentMngmt.Rent with {
-  payments: Association to many PaymentHistory on payments.rent = $self;
+extend rentMngmt.Expenditures with {
+  invoice: Association to one Invoice;
 };
 
 
@@ -66,13 +56,4 @@ annotate InvoiceItems with {
     itemDetail  @title: '{i18n>invDetail}';
     itemValue   @title: '{i18n>invItemValue}';
     itemTax     @title: '{i18n>invItemTax}';
-};
-
-annotate PaymentHistory with {
-    paymentDate     @title: '{i18n>payDate}';
-    payedAmount     @title: '{i18n>payAmount}';
-    payedCurrency   @title: '{i18n>payCurrency}';
-    expense         @title: '{i18n>payExpense}';
-    rent            @title: '{i18n>payRent}';
-    invoice         @title: '{i18n>payInvoice}';
 };
