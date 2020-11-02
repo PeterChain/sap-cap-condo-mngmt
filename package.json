@@ -50,6 +50,7 @@
   },
   "sapux": [
     "app/tenantsadm",
-    "app/rents"
+    "app/rents",
+    "app/expenditures"
   ]
 }
